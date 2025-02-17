@@ -4,6 +4,7 @@ import { ActionFormData } from '@minecraft/server-ui'
 world.getDimension("Overworld").runCommandAsync("gamerule naturalregeneration false")
 world.getDimension("Overworld").runCommandAsync("gamerule doimmediaterespawn true")
 world.getDimension("Overworld").runCommandAsync("gamerule showcoordinates true")
+world.getDimension("Overworld").runCommandAsync("gamerule sendcommandfeedback false")
 
 let timer = -1
 

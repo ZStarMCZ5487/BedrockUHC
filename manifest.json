@@ -1,0 +1,50 @@
+{
+  "format_version": 2,
+  "header": {
+      "name": "BedrockUHC",
+      "description": "yes, just uhc",
+      "min_engine_version": [
+          1,
+          20,
+          60
+      ],
+      "uuid": "5dd0ae5e-035a-4a7f-81b3-0ac8dddcd588",
+      "version": [
+          1,
+          0,
+          6
+      ]
+  },
+  "modules": [
+      {
+          "type": "data",
+          "uuid": "37e9c668-bb3d-4f61-88d5-ac936f766d26",
+          "version": [
+              1,
+              0,
+              6
+          ]
+      },
+      {
+          "type": "script",
+          "language": "javascript",
+          "uuid": "8b789905-8ab9-42e9-be04-34ae5d0fe115",
+          "entry": "scripts/main.js",
+          "version": [
+              1,
+              0,
+              6
+          ]
+      }
+  ],
+  "dependencies": [
+      {
+          "module_name": "@minecraft/server",
+          "version": "1.17.0"
+      },
+      {
+          "module_name": "@minecraft/server-ui",
+          "version": "1.4.0-beta"
+      }
+  ]
+}

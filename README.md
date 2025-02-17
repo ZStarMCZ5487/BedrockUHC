@@ -10,12 +10,12 @@ would recommend set simulation distance to 8 chunk
 ![image](https://github.com/user-attachments/assets/85e0667c-ca2f-4a15-a5cc-9cebcc36b643)
 
 # Command
-!start - find a place you would like to start a new game and use !start. (This command only works for Operators)
-!spectate - spectate other player after death.
+- !start - find a place you would like to start a new game and use !start. (This command only works for Operators)
+- !spectate - spectate other player after death.
 
 # Feature
-auto smelt 
-death match with border
+- auto smelt 
+- death match with border
 
-Found a bug? Deal with it. 👍
-I trust you can fix those bugs. 🐞
+- Found a bug? Deal with it. 👍
+- I trust you can fix those bugs. 🐞

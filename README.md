@@ -16,6 +16,4 @@ would recommend set simulation distance to 8 chunk
 # Feature
 - auto smelt 
 - death match with border
-
-- Found a bug? Deal with it. 👍
-- I trust you can fix those bugs. 🐞
+- IT'S NOT A BUG, IT'S A FEATURE! 🐞

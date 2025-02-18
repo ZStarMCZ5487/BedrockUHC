@@ -190,7 +190,7 @@ system.runInterval(() => {
     }
 })
 
-//auto smelt...
+//get apple chance...
 world.beforeEvents.playerBreakBlock.subscribe((ev) => {
     const p = ev.player
     const b = ev.block
@@ -210,6 +210,7 @@ world.afterEvents.entitySpawn.subscribe((ev) => {
     if(entity.typeId !== "minecraft:item") return
     const item = entity.getComponent("minecraft:item").itemStack
     const id = item?.typeId
+    //auto smelt...
     if (id == "minecraft:raw_copper") {
         world.getDimension("Overworld").spawnItem(new ItemStack("minecraft:copper_ingot", 1), entity.location)
         entity.kill()
@@ -220,6 +221,36 @@ world.afterEvents.entitySpawn.subscribe((ev) => {
     }
     if (id == "minecraft:raw_gold") {
         world.getDimension("Overworld").spawnItem(new ItemStack("minecraft:gold_ingot", 1), entity.location)
+        entity.kill()
+    }
+
+    //auto cook...
+    if (id == "minecraft:beef") {
+        world.getDimension("Overworld").spawnItem(new ItemStack("minecraft:cooked_beef", 1), entity.location)
+        entity.kill()
+    }
+    if (id == "minecraft:chicken") {
+        world.getDimension("Overworld").spawnItem(new ItemStack("minecraft:cooked_chicken", 1), entity.location)
+        entity.kill()
+    }
+    if (id == "minecraft:porkchop") {
+        world.getDimension("Overworld").spawnItem(new ItemStack("minecraft:cooked_porkchop", 1), entity.location)
+        entity.kill()
+    }
+    if (id == "minecraft:mutton") {
+        world.getDimension("Overworld").spawnItem(new ItemStack("minecraft:cooked_mutton", 1), entity.location)
+        entity.kill()
+    }
+    if (id == "minecraft:rabbit") {
+        world.getDimension("Overworld").spawnItem(new ItemStack("minecraft:cooked_rabbit", 1), entity.location)
+        entity.kill()
+    }
+    if (id == "minecraft:cod") {
+        world.getDimension("Overworld").spawnItem(new ItemStack("minecraft:cooked_cod", 1), entity.location)
+        entity.kill()
+    }
+    if (id == "minecraft:salmon") {
+        world.getDimension("Overworld").spawnItem(new ItemStack("minecraft:cooked_salmon", 1), entity.location)
         entity.kill()
     }
 })

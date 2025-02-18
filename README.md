@@ -13,6 +13,7 @@ Then find a good place to start the game.
 - !spectate - spectate other player after death.
 
 # Feature
-- auto smelt 
+- auto smelt
+- auto cook
 - death match with border
 - IT'S NOT A BUG, IT'S A FEATURE! 🐞

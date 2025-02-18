@@ -1,4 +1,4 @@
-import { world, system } from "@minecraft/server"
+import { world, system, ItemStack } from "@minecraft/server"
 import { ActionFormData } from '@minecraft/server-ui'
 
 world.getDimension("Overworld").runCommandAsync("gamerule naturalregeneration false")
@@ -7,10 +7,6 @@ world.getDimension("Overworld").runCommandAsync("gamerule showcoordinates true")
 world.getDimension("Overworld").runCommandAsync("gamerule sendcommandfeedback false")
 
 let timer = -1
-
-let phase = 0
-//0 = searching location
-//1 = playing
 
 let spawnx = 0
 let spawny = 0
@@ -27,10 +23,8 @@ world.beforeEvents.chatSend.subscribe((ev) => {
             world.getDimension("Overworld").runCommandAsync("gamemode s @a")
 
             timer = 24000
-            phase = 1
 
             spawnx = p.location.x 
-            spawny = p.location.y
             spawnz = p.location.z 
 
             world.sendMessage("§l§aGame Started...")
@@ -49,7 +43,6 @@ world.beforeEvents.chatSend.subscribe((ev) => {
     if(ev.message == "!stop" && p.isOp) {
         ev.cancel = true
         timer = 0
-        phase = 0
 
         world.sendMessage("§l§cGame Force Stopped...")
         return
@@ -57,7 +50,7 @@ world.beforeEvents.chatSend.subscribe((ev) => {
 
     if(ev.message == "!dm" && p.isOp) {
         ev.cancel = true
-        timer = 6001
+        timer = 6101
 
         world.sendMessage("§l§cForce Death Match...")
         return
@@ -98,54 +91,42 @@ system.runInterval(() => {
     world.getDimension("Overworld").runCommandAsync("enchant @a unbreaking 3")
     world.getDimension("Overworld").runCommandAsync("effect @a night_vision infinite 1 true")
 
-    for (const p of world.getPlayers()) {
+    if (timer > 0) {
+        timer--
+    }
 
-        if (timer > 0 && phase == 1) {
+    let borderx = 50
+    let borderz = 50
+
+    //idk why dont work?... btu i will just leave it here...
+    if (timer <= 6000 && timer >= 1) {
+        borderx - 0.3
+        borderz - 0.3
+    }
+
+    for (const p of world.getPlayers()) {
+        if (timer > 0) {
             const remainingSeconds = Math.floor(timer / 20)
             const remainingMinutes = Math.floor(remainingSeconds / 60)
             const displaySeconds = remainingSeconds % 60
             const displayMinutes = remainingMinutes % 60
-            timer--
-    
+
             world.getDimension("Overworld").runCommandAsync("title @a actionbar §8[§aPlayer§8]§f: " + world.getPlayers({tags: ["playing"] }).length + " §8[§eTime§8]§f: " + displayMinutes + ":" + displaySeconds)
         }
 
-        //18000 = 15:00
-        if (timer == 18000 && phase == 1) {
-            world.sendMessage("§l§cPVP is Enabled...")
-            world.getDimension("Overworld").runCommandAsync("gamerule pvp true")
-            
-        }
-
-        if (world.getPlayers({tags: ["playing"] }).length == 1 && phase == 1) {
+        if (world.getPlayers({tags: ["playing"] }).length == 1) {
 
             if (p.hasTag("playing") == true) {
                 world.sendMessage("§l§a" + p.name + " won the game!")
                 world.getDimension("Overworld").runCommandAsync('gamemode spectator @a')
                 world.getDimension("Overworld").runCommandAsync("tag @a remove playing")
             }
-
-            timer = -1
-            phase = 0
-        }
     
-        if (timer == 0 && phase == 1) {
             timer = -1
-            phase = 0
-            world.sendMessage("§l§cGame Over")
-            world.getDimension("Overworld").runCommandAsync('gamemode spectator @a')
-            world.getDimension("Overworld").runCommandAsync("tag @a remove playing")
         }
 
-        //6000 = 5:00
-        if (timer == 6000 && phase == 1) {
-            world.getDimension("Overworld").runCommandAsync("tp @a " + spawnx + " " + spawny + " " + spawnz)
-            p.teleport({x: spawnx, y: spawny, z: spawnz})
-            p.sendMessage("§l§cDeath Match.")
-        }
-
-        if (timer <= 6000 && timer >= 1 && phase == 1) {
-            if (p.location.x >= spawnx + 80 || p.location.x <= spawnx - 80 || p.location.z >= spawnz + 80 || p.location.z <= spawnz - 80) {
+        if (timer <= 6000 && timer >= 1) {
+            if (p.location.x >= spawnx + borderx || p.location.x <= spawnx - borderx || p.location.z >= spawnz + borderz || p.location.z <= spawnz - borderz) {
                 p.applyDamage(0.5)
                 if (!p.hasTag("border")) {
                     p.sendMessage("§l§cYou are outside of the border!")
@@ -158,23 +139,54 @@ system.runInterval(() => {
             }
 
             system.runTimeout(() => {
-                for (let border1 of line({x: spawnx + 80, y: 100, z: spawnz + 80}, {x: spawnx - 80, y: 100, z: spawnz + 80}, 20)) {
+                for (let border1 of line({x: spawnx + borderx, y: 100, z: spawnz + borderz}, {x: spawnx - borderx, y: 100, z: spawnz + borderz}, 8)) {
                     world.getDimension("overworld").spawnParticle("minecraft:falling_border_dust_particle", border1)
                 }
-    
-                for (let border2 of line({x: spawnx + 80, y: 100, z: spawnz - 80}, {x: spawnx - 80, y: 100, z: spawnz - 80}, 20)) {
+            
+                for (let border2 of line({x: spawnx + borderx, y: 100, z: spawnz - borderz}, {x: spawnx - borderx, y: 100, z: spawnz - borderz}, 8)) {
                     world.getDimension("overworld").spawnParticle("minecraft:falling_border_dust_particle", border2)
                 }
-    
-                for (let border3 of line({x: spawnx + 80, y: 100, z: spawnz + 80}, {x: spawnx + 80, y: 100, z: spawnz - 80}, 20)) {
+            
+                for (let border3 of line({x: spawnx + borderx, y: 100, z: spawnz + borderz}, {x: spawnx + borderx, y: 100, z: spawnz - borderz}, 8)) {
                     world.getDimension("overworld").spawnParticle("minecraft:falling_border_dust_particle", border3)
                 }
-    
-                for (let border4 of line({x: spawnx - 80, y: 100, z: spawnz - 80}, {x: spawnx - 80, y: 100, z: spawnz + 80}, 20)) {
+            
+                for (let border4 of line({x: spawnx - borderx, y: 100, z: spawnz - borderz}, {x: spawnx - borderx, y: 100, z: spawnz + borderz}, 8)) {
                     world.getDimension("overworld").spawnParticle("minecraft:falling_border_dust_particle", border4)
                 }
             }, 100)
         }
+    }
+
+    //18000 = 15:00
+    if (timer == 18000) {
+        world.sendMessage("§l§cPVP is Enabled...")
+        world.getDimension("Overworld").runCommandAsync("gamerule pvp true")
+        
+    }
+
+    if (timer == 0) {
+        timer = -1
+        world.sendMessage("§l§cGame Over")
+        world.getDimension("Overworld").runCommandAsync('gamemode spectator @a')
+        world.getDimension("Overworld").runCommandAsync("tag @a remove playing")
+    }
+
+    //6000 = 5:00
+    if (timer == 6100) {
+        world.sendMessage("§l§cDeath Match in 5...")
+    }
+    if (timer == 6080) {
+        world.sendMessage("§l§cDeath Match in 4...")
+    }
+    if (timer == 6060) {
+        world.sendMessage("§l§cDeath Match in 3...")
+    }
+    if (timer == 6040) {
+        world.sendMessage("§l§cDeath Match in 2...")
+    }
+    if (timer == 6020) {
+        world.sendMessage("§l§cDeath Match in 1...")
     }
 })
 
@@ -183,40 +195,32 @@ world.beforeEvents.playerBreakBlock.subscribe((ev) => {
     const p = ev.player
     const b = ev.block
 
-    if (b.typeId == "minecraft:copper_ore" || b.typeId == "minecraft:deepslate_copper_ore") {
-        ev.cancel = true
+    if (b.typeId == "minecraft:oak_leaves" || b.typeId == "minecraft:birch_leaves" || b.typeId == "minecraft:spruce_leaves" || b.typeId == "minecraft:acacia_leaves" || b.typeId == "minecraft:jungle_leaves" || b.typeId == "minecraft:dark_oak_leaves" || b.typeId == "minecraft:azalea_leaves" || b.typeId == "minecraft:azalea_leaves_flowered" || b.typeId == "minecraft:cherry_leaves" || b.typeId == "minecraft:mangrove_leaves" || b.typeId == "minecraft:pale_oak_leaves") {
         system.run(() => {
-            b.setType("minecraft:air")
-            world.getDimension("Overworld").runCommandAsync('give "' + p.name + '" copper_ingot ' + Math.floor((Math.random() * 5) + 3))
-            world.getDimension("Overworld").runCommandAsync('xp 2 "' + p.name + '"')
+            var chance = Math.floor(Math.random() * 11);
+            if (chance < 2) { //20% chance of getting apple
+                world.getDimension("Overworld").spawnItem(new ItemStack("minecraft:apple", 1), b.location)
+            }
         })
     }
+})
 
-    if (b.typeId == "minecraft:iron_ore" || b.typeId == "minecraft:deepslate_iron_ore") {
-        ev.cancel = true
-        system.run(() => {
-            b.setType("minecraft:air")
-            world.getDimension("Overworld").runCommandAsync('give "' + p.name + '" iron_ingot')
-            world.getDimension("Overworld").runCommandAsync('xp 2 "' + p.name + '"')
-        })
+world.afterEvents.entitySpawn.subscribe((ev) => {
+    const {entity} = ev
+    if(entity.typeId !== "minecraft:item") return
+    const item = entity.getComponent("minecraft:item").itemStack
+    const id = item?.typeId
+    if (id == "minecraft:raw_copper") {
+        world.getDimension("Overworld").spawnItem(new ItemStack("minecraft:copper_ingot", 1), entity.location)
+        entity.kill()
     }
-
-    if (b.typeId == "minecraft:gold_ore" || b.typeId == "minecraft:deepslate_gold_ore") {
-        ev.cancel = true
-        system.run(() => {
-            b.setType("minecraft:air")
-            world.getDimension("Overworld").runCommandAsync('give "' + p.name + '" gold_ingot')
-            world.getDimension("Overworld").runCommandAsync('xp 2 "' + p.name + '"')
-        })
+    if (id == "minecraft:raw_iron") {
+        world.getDimension("Overworld").spawnItem(new ItemStack("minecraft:iron_ingot", 1), entity.location)
+        entity.kill()
     }
-
-    if (b.typeId == "minecraft:diamond_ore" || b.typeId == "minecraft:deepslate_diamond_ore") {
-        ev.cancel = true
-        system.run(() => {
-            b.setType("minecraft:air")
-            world.getDimension("Overworld").runCommandAsync('give "' + p.name + '" diamond')
-            world.getDimension("Overworld").runCommandAsync('xp 2 "' + p.name + '"')
-        })
+    if (id == "minecraft:raw_gold") {
+        world.getDimension("Overworld").spawnItem(new ItemStack("minecraft:gold_ingot", 1), entity.location)
+        entity.kill()
     }
 })
 

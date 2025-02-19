@@ -137,24 +137,6 @@ system.runInterval(() => {
                     p.removeTag("border")
                 }
             }
-
-            system.runTimeout(() => {
-                for (let border1 of line({x: spawnx + borderx, y: 100, z: spawnz + borderz}, {x: spawnx - borderx, y: 100, z: spawnz + borderz}, 8)) {
-                    world.getDimension("overworld").spawnParticle("minecraft:falling_border_dust_particle", border1)
-                }
-            
-                for (let border2 of line({x: spawnx + borderx, y: 100, z: spawnz - borderz}, {x: spawnx - borderx, y: 100, z: spawnz - borderz}, 8)) {
-                    world.getDimension("overworld").spawnParticle("minecraft:falling_border_dust_particle", border2)
-                }
-            
-                for (let border3 of line({x: spawnx + borderx, y: 100, z: spawnz + borderz}, {x: spawnx + borderx, y: 100, z: spawnz - borderz}, 8)) {
-                    world.getDimension("overworld").spawnParticle("minecraft:falling_border_dust_particle", border3)
-                }
-            
-                for (let border4 of line({x: spawnx - borderx, y: 100, z: spawnz - borderz}, {x: spawnx - borderx, y: 100, z: spawnz + borderz}, 8)) {
-                    world.getDimension("overworld").spawnParticle("minecraft:falling_border_dust_particle", border4)
-                }
-            }, 100)
         }
     }
 
@@ -187,6 +169,26 @@ system.runInterval(() => {
     }
     if (timer == 6020) {
         world.sendMessage("§l§cDeath Match in 1...")
+    }
+
+    if (timer <= 6000 && timer >= 1) {
+        system.runTimeout(() => {
+                for (let border1 of line({x: spawnx + borderx, y: 100, z: spawnz + borderz}, {x: spawnx - borderx, y: 100, z: spawnz + borderz}, 8)) {
+                    world.getDimension("overworld").spawnParticle("minecraft:falling_border_dust_particle", border1)
+                }
+            
+                for (let border2 of line({x: spawnx + borderx, y: 100, z: spawnz - borderz}, {x: spawnx - borderx, y: 100, z: spawnz - borderz}, 8)) {
+                    world.getDimension("overworld").spawnParticle("minecraft:falling_border_dust_particle", border2)
+                }
+            
+                for (let border3 of line({x: spawnx + borderx, y: 100, z: spawnz + borderz}, {x: spawnx + borderx, y: 100, z: spawnz - borderz}, 8)) {
+                    world.getDimension("overworld").spawnParticle("minecraft:falling_border_dust_particle", border3)
+                }
+            
+                for (let border4 of line({x: spawnx - borderx, y: 100, z: spawnz - borderz}, {x: spawnx - borderx, y: 100, z: spawnz + borderz}, 8)) {
+                    world.getDimension("overworld").spawnParticle("minecraft:falling_border_dust_particle", border4)
+                }
+            }, 100)
     }
 })
 

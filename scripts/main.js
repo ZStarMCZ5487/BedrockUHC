@@ -32,7 +32,8 @@ world.beforeEvents.chatSend.subscribe((ev) => {
             world.getDimension("Overworld").runCommandAsync("gamerule pvp false")
             world.getDimension("Overworld").runCommandAsync("time set day")
             world.getDimension("Overworld").runCommandAsync("setworldspawn " + spawnx + " " + spawny + " " + spawnz)
-            world.getDimension("Overworld").runCommandAsync("effect @a instant_health 5 255")
+            world.getDimension("Overworld").runCommandAsync("effect @a instant_health 5 255 true")
+            world.getDimension("Overworld").runCommandAsync("effect @a health_boost infinite 4 true")
             world.getDimension("Overworld").runCommandAsync("clear @a")
             world.getDimension("Overworld").runCommandAsync("give @a golden_apple 2")
             world.getDimension("Overworld").runCommandAsync("give @a cooked_beef 5")
@@ -169,6 +170,13 @@ system.runInterval(() => {
     }
     if (timer == 6020) {
         world.sendMessage("§l§cDeath Match in 1...")
+    }
+
+    if (timer == 6000) {
+        //spreadplayers ~ ~ 10 15 @a ~
+        world.getDimension("Overworld").runCommandAsync("spreadplayers " + spawnx + " " + spawnz + " 10 30 @a")
+        world.sendMessage("§l§cDeath Match Started!!!")
+        world.getDimension("Overworld").runCommandAsync("title @a title §l§cDeath Match")
     }
 
     if (timer <= 6000 && timer >= 1) {
